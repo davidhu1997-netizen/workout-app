@@ -72,3 +72,36 @@ export function saveSession(session: WorkoutSession): void {
   }
   setItem(KEYS.sessions, sessions)
 }
+
+// --- Admin functions ---
+
+export function saveTemplate(template: WorkoutTemplate): void {
+  const templates = getTemplates()
+  const index = templates.findIndex((t) => t.id === template.id)
+  if (index >= 0) {
+    templates[index] = template
+  } else {
+    templates.push(template)
+  }
+  setItem(KEYS.templates, templates)
+}
+
+export function deleteTemplate(id: string): void {
+  const templates = getTemplates().filter((t) => t.id !== id)
+  setItem(KEYS.templates, templates)
+}
+
+export function addScheduledWorkout(workout: ScheduledWorkout): void {
+  const schedule = getSchedule()
+  schedule.push(workout)
+  setItem(KEYS.schedule, schedule)
+}
+
+export function deleteScheduledWorkout(id: string): void {
+  const schedule = getSchedule().filter((s) => s.id !== id)
+  setItem(KEYS.schedule, schedule)
+}
+
+export function saveFullSchedule(schedule: ScheduledWorkout[]): void {
+  setItem(KEYS.schedule, schedule)
+}
