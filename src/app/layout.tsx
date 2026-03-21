@@ -17,6 +17,12 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: "Workout Companion",
   description: "Your guided workout companion",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Workout",
+  },
 };
 
 export const viewport: Viewport = {

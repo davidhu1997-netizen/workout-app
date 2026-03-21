@@ -82,7 +82,8 @@ export default function GuidedExercisePage() {
 
   const advanceToNext = () => {
     if (exerciseIndex + 1 >= totalExercises) {
-      dispatch({ type: 'COMPLETE_WORKOUT' })
+      // Don't dispatch COMPLETE_WORKOUT here — the completion page handles that
+      // with feeling/notes. Just navigate.
       router.push(`/workout/${session.id}/complete`)
     } else {
       dispatch({ type: 'NEXT_EXERCISE' })
