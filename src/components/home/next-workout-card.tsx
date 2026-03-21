@@ -5,7 +5,7 @@ import { WorkoutTemplate, ScheduledWorkout, WorkoutSession } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { generateId } from '@/lib/utils'
-import { saveSession, updateScheduledWorkout } from '@/lib/storage'
+import { writeSaveSession, writeUpdateScheduledWorkout } from '@/hooks/use-data'
 
 interface NextWorkoutCardProps {
   template: WorkoutTemplate
@@ -42,8 +42,8 @@ export function NextWorkoutCard({ template, scheduled, existingSession }: NextWo
       })),
     }
 
-    saveSession(session)
-    updateScheduledWorkout({ ...scheduled, status: 'in_progress', sessionId })
+    writeSaveSession(session)
+    writeUpdateScheduledWorkout({ ...scheduled, status: 'in_progress', sessionId })
     router.push(`/workout/${sessionId}`)
   }
 

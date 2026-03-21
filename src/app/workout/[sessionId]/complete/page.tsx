@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWorkoutSession } from '@/context/workout-session-context'
-import { getTemplate } from '@/lib/storage'
+import { useTemplate } from '@/hooks/use-data'
 import { formatDuration } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { WorkoutSession } from '@/lib/types'
@@ -20,7 +20,7 @@ export default function WorkoutCompletePage() {
   const [selectedFeeling, setSelectedFeeling] = useState<WorkoutSession['overallFeeling']>()
   const [notes, setNotes] = useState('')
 
-  const template = session ? getTemplate(session.templateId) : null
+  const { data: template } = useTemplate(session?.templateId ?? '')
 
   if (!session || !template) {
     return (

@@ -1,8 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { WorkoutSession, WorkoutTemplate } from '@/lib/types'
-import { getSessions, getTemplates } from '@/lib/storage'
+import { useSessions, useTemplates } from '@/hooks/use-data'
+import { WorkoutSession } from '@/lib/types'
 import { formatDate, formatDuration } from '@/lib/utils'
 import { PageHeader } from '@/components/layout/page-header'
 
@@ -37,17 +36,10 @@ const feelingBadge: Record<string, { label: string; color: string }> = {
 }
 
 export default function ProgressPage() {
-  const [sessions, setSessions] = useState<WorkoutSession[]>([])
-  const [templates, setTemplates] = useState<WorkoutTemplate[]>([])
-  const [ready, setReady] = useState(false)
+  const { data: sessions, loading: sLoading } = useSessions()
+  const { data: templates, loading: tLoading } = useTemplates()
 
-  useEffect(() => {
-    setSessions(getSessions())
-    setTemplates(getTemplates())
-    setReady(true)
-  }, [])
-
-  if (!ready) return null
+  if (sLoading || tLoading) return null
 
   const completed = sessions
     .filter((s) => s.completedAt)

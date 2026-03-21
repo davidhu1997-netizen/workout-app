@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWorkoutSession } from '@/context/workout-session-context'
-import { getTemplate } from '@/lib/storage'
+import { useTemplate } from '@/hooks/use-data'
 import { PageHeader } from '@/components/layout/page-header'
 import { ProgressBar } from '@/components/ui/progress-bar'
 import { ExerciseView } from '@/components/workout/exercise-view'
@@ -20,7 +20,7 @@ export default function GuidedExercisePage() {
   const [showDemo, setShowDemo] = useState(false)
   const [showExitConfirm, setShowExitConfirm] = useState(false)
 
-  const template = session ? getTemplate(session.templateId) : null
+  const { data: template } = useTemplate(session?.templateId ?? '')
 
   const handleBack = useCallback(() => {
     if (session && session.exercises.some((e) => e.sets.some((s) => s.completed))) {

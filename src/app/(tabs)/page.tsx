@@ -1,26 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { WorkoutTemplate, ScheduledWorkout, WorkoutSession } from '@/lib/types'
-import { getTemplates, getSchedule, getSessions } from '@/lib/storage'
+import { useTemplates, useSchedule, useSessions } from '@/hooks/use-data'
 import { Greeting } from '@/components/home/greeting'
 import { NextWorkoutCard } from '@/components/home/next-workout-card'
 import { RecentSessions } from '@/components/home/recent-sessions'
 
 export default function HomePage() {
-  const [templates, setTemplates] = useState<WorkoutTemplate[]>([])
-  const [schedule, setSchedule] = useState<ScheduledWorkout[]>([])
-  const [sessions, setSessions] = useState<WorkoutSession[]>([])
-  const [ready, setReady] = useState(false)
+  const { data: templates, loading: tLoading } = useTemplates()
+  const { data: schedule, loading: sLoading } = useSchedule()
+  const { data: sessions, loading: sessLoading } = useSessions()
 
-  useEffect(() => {
-    setTemplates(getTemplates())
-    setSchedule(getSchedule())
-    setSessions(getSessions())
-    setReady(true)
-  }, [])
-
-  if (!ready) return null
+  if (tLoading || sLoading || sessLoading) return null
 
   const completedCount = schedule.filter((s) => s.status === 'completed').length
   const totalCount = schedule.length

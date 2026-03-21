@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useReducer, useEffect, useCallback } from 'react'
 import { WorkoutSession, ExerciseSession } from '@/lib/types'
-import { saveSession, getSession, updateScheduledWorkout, getSchedule } from '@/lib/storage'
+import { getSchedule } from '@/lib/storage'
+import { writeSaveSession, writeUpdateScheduledWorkout } from '@/hooks/use-data'
 
 type Action =
   | { type: 'LOAD_SESSION'; session: WorkoutSession }
@@ -103,10 +104,40 @@ export function WorkoutSessionProvider({
   const [session, rawDispatch] = useReducer(reducer, null)
 
   useEffect(() => {
-    const loaded = getSession(sessionId)
-    if (loaded) {
-      rawDispatch({ type: 'LOAD_SESSION', session: loaded })
-    }
+    // Load session - try Supabase first via use-data, fallback to localStorage
+    import('@/hooks/use-data').then(async () => {
+      // Use storage directly for initial load since we can't use hooks here
+      const { getSession } = await import('@/lib/storage')
+      const { supabase } = await import('@/lib/supabase')
+      if (supabase) {
+        const { data } = await supabase
+          .from('workout_sessions')
+          .select('*')
+          .eq('id', sessionId)
+          .single()
+        if (data) {
+          rawDispatch({
+            type: 'LOAD_SESSION',
+            session: {
+              id: data.id,
+              templateId: data.template_id,
+              scheduledWorkoutId: data.scheduled_workout_id,
+              startedAt: data.started_at,
+              completedAt: data.completed_at ?? undefined,
+              currentExerciseIndex: data.current_exercise_index,
+              exercises: data.exercises,
+              overallFeeling: data.overall_feeling ?? undefined,
+              notes: data.notes ?? undefined,
+            },
+          })
+          return
+        }
+      }
+      const loaded = getSession(sessionId)
+      if (loaded) {
+        rawDispatch({ type: 'LOAD_SESSION', session: loaded })
+      }
+    })
   }, [sessionId])
 
   const dispatch = useCallback(
@@ -119,14 +150,14 @@ export function WorkoutSessionProvider({
   // Persist on every state change
   useEffect(() => {
     if (session) {
-      saveSession(session)
+      writeSaveSession(session)
 
       // Also update ScheduledWorkout status
       if (session.completedAt) {
         const schedule = getSchedule()
         const sw = schedule.find((s) => s.id === session.scheduledWorkoutId)
         if (sw && sw.status !== 'completed') {
-          updateScheduledWorkout({ ...sw, status: 'completed' })
+          writeUpdateScheduledWorkout({ ...sw, status: 'completed' })
         }
       }
     }
