@@ -42,7 +42,7 @@ export function TemplateList({ templates, onRefresh }: TemplateListProps) {
               <div>
                 <p className="text-sm font-semibold text-foreground">{template.name}</p>
                 <p className="text-xs text-muted mt-0.5">
-                  {template.exercises.length} exercises &middot; ~{template.estimatedMinutes} min
+                  {template.exercises.length} exercises
                 </p>
               </div>
               <div className="flex items-center gap-2">

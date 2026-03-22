@@ -11,7 +11,7 @@ export function seedTemplates(): WorkoutTemplate[] {
     {
       id: 'tmpl-upper',
       name: 'Upper Body Strength',
-      estimatedMinutes: 35,
+
       exercises: [
         {
           id: 'ex-warmup-upper',
@@ -90,7 +90,7 @@ export function seedTemplates(): WorkoutTemplate[] {
     {
       id: 'tmpl-lower',
       name: 'Lower Body Strength',
-      estimatedMinutes: 40,
+
       exercises: [
         {
           id: 'ex-warmup-lower',
@@ -165,7 +165,7 @@ export function seedTemplates(): WorkoutTemplate[] {
     {
       id: 'tmpl-full',
       name: 'Full Body Strength',
-      estimatedMinutes: 45,
+
       exercises: [
         {
           id: 'ex-warmup-full',

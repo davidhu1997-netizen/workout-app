@@ -16,7 +16,6 @@ function rowToTemplate(row: Record<string, unknown>): WorkoutTemplate {
     id: row.id as string,
     name: row.name as string,
     exercises: row.exercises as WorkoutTemplate['exercises'],
-    estimatedMinutes: row.estimated_minutes as number,
     imageUrl: row.image_url as string | undefined,
   }
 }
@@ -117,7 +116,6 @@ export async function writeSaveTemplate(template: WorkoutTemplate): Promise<void
       id: template.id,
       name: template.name,
       exercises: template.exercises,
-      estimated_minutes: template.estimatedMinutes,
       image_url: template.imageUrl ?? null,
       updated_at: new Date().toISOString(),
     })

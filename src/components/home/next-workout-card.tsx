@@ -68,7 +68,7 @@ export function NextWorkoutCard({ template, scheduled, existingSession }: NextWo
             </li>
           ))}
         </ol>
-        <p className="text-xs text-muted mb-4">~{template.estimatedMinutes} min</p>
+        <p className="text-xs text-muted mb-4">{template.exercises.length} exercises</p>
         <Button size="lg" className="w-full" onClick={handleStart}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <polygon points="5 3 19 12 5 21 5 3" />

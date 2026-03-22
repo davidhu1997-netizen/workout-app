@@ -12,7 +12,6 @@ describe('seedTemplates', () => {
     for (const t of templates) {
       expect(t.name).toBeTruthy()
       expect(t.exercises.length).toBeGreaterThanOrEqual(4)
-      expect(t.estimatedMinutes).toBeGreaterThan(0)
     }
   })
 

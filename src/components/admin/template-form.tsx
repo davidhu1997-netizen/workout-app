@@ -35,7 +35,6 @@ function parseImportedExercises(raw: unknown[]): Exercise[] {
 
 const IMPORT_EXAMPLE = `{
   "name": "Upper Body Strength",
-  "estimatedMinutes": 35,
   "exercises": [
     {
       "name": "Dumbbell Chest Press",
@@ -71,7 +70,6 @@ export function TemplateForm({ template }: TemplateFormProps) {
   const isEdit = !!template
 
   const [name, setName] = useState(template?.name ?? '')
-  const [estimatedMinutes, setEstimatedMinutes] = useState(template?.estimatedMinutes ?? 30)
   const [exercises, setExercises] = useState<Exercise[]>(
     template?.exercises ?? [createBlankExercise()]
   )
@@ -81,7 +79,6 @@ export function TemplateForm({ template }: TemplateFormProps) {
   const [importPreview, setImportPreview] = useState<{
     exercises: Exercise[]
     name?: string
-    minutes?: number
   } | null>(null)
 
   const handleExerciseChange = (index: number, exercise: Exercise) => {
@@ -122,7 +119,6 @@ export function TemplateForm({ template }: TemplateFormProps) {
     const saved: WorkoutTemplate = {
       id: template?.id ?? generateId(),
       name: name.trim(),
-      estimatedMinutes,
       exercises: validExercises,
     }
 
@@ -142,7 +138,6 @@ export function TemplateForm({ template }: TemplateFormProps) {
         setImportPreview({
           exercises: imported,
           name: typeof parsed.name === 'string' ? parsed.name : undefined,
-          minutes: typeof parsed.estimatedMinutes === 'number' ? parsed.estimatedMinutes : undefined,
         })
       } else if (Array.isArray(parsed)) {
         const imported = parseImportedExercises(parsed)
@@ -158,7 +153,6 @@ export function TemplateForm({ template }: TemplateFormProps) {
   const handleConfirmImport = () => {
     if (!importPreview) return
     if (importPreview.name && !name.trim()) setName(importPreview.name)
-    if (importPreview.minutes) setEstimatedMinutes(importPreview.minutes)
     setExercises(importPreview.exercises)
     setImportPreview(null)
     setImportText('')
@@ -187,18 +181,6 @@ export function TemplateForm({ template }: TemplateFormProps) {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
-            Estimated Duration (minutes)
-          </label>
-          <input
-            type="number"
-            value={estimatedMinutes}
-            onChange={(e) => setEstimatedMinutes(parseInt(e.target.value) || 30)}
-            min={5}
-            className="w-24 px-3 py-2 rounded-xl bg-surface-warm border border-border text-sm focus:outline-none focus:border-brand"
-          />
-        </div>
       </div>
 
       <div className="mb-4 flex items-center justify-between">

@@ -4,6 +4,23 @@ import { useTemplates, useSchedule, useSessions } from '@/hooks/use-data'
 import { Greeting } from '@/components/home/greeting'
 import { NextWorkoutCard } from '@/components/home/next-workout-card'
 import { RecentSessions } from '@/components/home/recent-sessions'
+import { WorkoutSession } from '@/lib/types'
+
+function getThisWeekCount(sessions: WorkoutSession[]): number {
+  const now = new Date()
+  const day = now.getDay()
+  const diffToMonday = day === 0 ? -6 : 1 - day
+  const monday = new Date(now)
+  monday.setDate(now.getDate() + diffToMonday)
+  monday.setHours(0, 0, 0, 0)
+  return sessions.filter((s) => s.completedAt && new Date(s.completedAt) >= monday).length
+}
+
+function getThisMonthCount(sessions: WorkoutSession[]): number {
+  const now = new Date()
+  const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+  return sessions.filter((s) => s.completedAt && new Date(s.completedAt) >= firstOfMonth).length
+}
 
 export default function HomePage() {
   const { data: templates, loading: tLoading } = useTemplates()
@@ -14,6 +31,8 @@ export default function HomePage() {
 
   const completedCount = schedule.filter((s) => s.status === 'completed').length
   const totalCount = schedule.length
+  const weekCount = getThisWeekCount(sessions)
+  const monthCount = getThisMonthCount(sessions)
 
   // Find next workout: in_progress first, then first upcoming
   const inProgress = schedule.find((s) => s.status === 'in_progress')
@@ -28,6 +47,19 @@ export default function HomePage() {
   return (
     <div className="max-w-md mx-auto">
       <Greeting completedCount={completedCount} totalCount={totalCount} />
+
+      {(weekCount > 0 || monthCount > 0) && (
+        <div className="grid grid-cols-2 gap-3 px-4 mt-4">
+          <div className="bg-surface rounded-2xl border border-border p-4 text-center shadow-[var(--shadow)]">
+            <p className="text-2xl font-bold font-heading text-brand">{weekCount}</p>
+            <p className="text-xs text-muted mt-0.5">This week</p>
+          </div>
+          <div className="bg-surface rounded-2xl border border-border p-4 text-center shadow-[var(--shadow)]">
+            <p className="text-2xl font-bold font-heading text-brand">{monthCount}</p>
+            <p className="text-xs text-muted mt-0.5">This month</p>
+          </div>
+        </div>
+      )}
 
       {nextTemplate && nextScheduled ? (
         <div className="mt-4">
