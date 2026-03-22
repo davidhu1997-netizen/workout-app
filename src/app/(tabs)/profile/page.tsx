@@ -20,26 +20,6 @@ export default function ProfilePage() {
           <p className="text-sm text-muted mt-1">Workout Companion</p>
         </div>
 
-        <div className="mt-4 bg-surface rounded-2xl border border-border p-4 shadow-[var(--shadow)]">
-          <p className="text-xs text-muted">App Version</p>
-          <p className="text-sm font-medium text-foreground">v0.1.0</p>
-        </div>
-
-        <Link
-          href="/admin"
-          className="mt-4 block bg-surface rounded-2xl border border-border p-4 shadow-[var(--shadow)] hover:shadow-[var(--shadow-md)] transition-shadow"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-semibold text-foreground">Coach Dashboard</p>
-              <p className="text-xs text-muted mt-0.5">Manage templates, schedule, and review</p>
-            </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </div>
-        </Link>
-
         <div className="mt-4 bg-surface-warm rounded-2xl p-4 text-center">
           <p className="text-sm text-muted">
             More settings coming soon.

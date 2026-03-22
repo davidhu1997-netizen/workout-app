@@ -39,12 +39,25 @@ export default function HomePage() {
         </div>
       ) : (
         <div className="mx-4 mt-8 p-8 text-center rounded-[32px] bg-surface-warm">
-          <p className="text-lg font-heading font-semibold text-foreground mb-2">
-            All done this week!
-          </p>
-          <p className="text-sm text-muted">
-            You&apos;ve completed all your scheduled workouts. Enjoy the rest.
-          </p>
+          {totalCount > 0 ? (
+            <>
+              <p className="text-lg font-heading font-semibold text-foreground mb-2">
+                All done this week!
+              </p>
+              <p className="text-sm text-muted">
+                You&apos;ve completed all your scheduled workouts. Enjoy the rest.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-lg font-heading font-semibold text-foreground mb-2">
+                No workouts scheduled yet
+              </p>
+              <p className="text-sm text-muted">
+                Your workouts will show up here once they&apos;re ready.
+              </p>
+            </>
+          )}
         </div>
       )}
 
