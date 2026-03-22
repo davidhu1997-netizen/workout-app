@@ -141,6 +141,17 @@ export function ExerciseEditor({
         </div>
 
         <div>
+          <label className="block text-xs font-medium text-muted mb-1">Demo Video URL (optional)</label>
+          <input
+            type="text"
+            value={exercise.demoUrl ?? ''}
+            onChange={(e) => update({ demoUrl: e.target.value || undefined })}
+            className="w-full px-3 py-2 rounded-xl bg-surface-warm border border-border text-sm focus:outline-none focus:border-brand"
+            placeholder="https://www.youtube.com/watch?v=..."
+          />
+        </div>
+
+        <div>
           <label className="block text-xs font-medium text-muted mb-1">
             Common Mistakes (one per line, optional)
           </label>
