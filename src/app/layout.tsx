@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Manrope } from "next/font/google";
+import { SwRegister } from "@/components/sw-register";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -40,6 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${plusJakarta.variable} ${manrope.variable}`}>
       <body className="min-h-dvh bg-background text-foreground antialiased">
+        <SwRegister />
         {children}
       </body>
     </html>

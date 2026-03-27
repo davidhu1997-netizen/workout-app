@@ -33,7 +33,10 @@ export default function GuidedExercisePage() {
   if (!session || !template) {
     return (
       <div className="flex items-center justify-center min-h-dvh">
-        <p className="text-muted">Loading workout...</p>
+        <svg className="animate-spin w-8 h-8" viewBox="0 0 24 24" fill="none" aria-label="Loading">
+          <circle cx="12" cy="12" r="10" stroke="var(--border)" strokeWidth="3" />
+          <path d="M12 2a10 10 0 0 1 10 10" stroke="var(--brand)" strokeWidth="3" strokeLinecap="round" />
+        </svg>
       </div>
     )
   }

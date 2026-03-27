@@ -5,6 +5,7 @@ import { Greeting } from '@/components/home/greeting'
 import { NextWorkoutCard } from '@/components/home/next-workout-card'
 import { RecentSessions } from '@/components/home/recent-sessions'
 import { WorkoutSession } from '@/lib/types'
+import { PageSpinner } from '@/components/ui/spinner'
 
 function getThisWeekCount(sessions: WorkoutSession[]): number {
   const now = new Date()
@@ -27,7 +28,7 @@ export default function HomePage() {
   const { data: schedule, loading: sLoading } = useSchedule()
   const { data: sessions, loading: sessLoading } = useSessions()
 
-  if (tLoading || sLoading || sessLoading) return null
+  if (tLoading || sLoading || sessLoading) return <PageSpinner />
 
   const completedCount = schedule.filter((s) => s.status === 'completed').length
   const totalCount = schedule.length

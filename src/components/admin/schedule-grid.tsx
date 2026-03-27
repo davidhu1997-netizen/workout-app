@@ -51,6 +51,7 @@ interface ScheduleGridProps {
 
 export function ScheduleGrid({ schedule, templates, onRefresh }: ScheduleGridProps) {
   const [weekOffset, setWeekOffset] = useState(0)
+  const [error, setError] = useState('')
 
   const monday = getMonday(new Date())
   monday.setDate(monday.getDate() + weekOffset * 7)
@@ -62,36 +63,41 @@ export function ScheduleGrid({ schedule, templates, onRefresh }: ScheduleGridPro
   }
 
   const handleAssign = async (date: Date, templateId: string) => {
+    setError('')
     const iso = toISODate(date)
     const existing = schedule.find((s) => s.scheduledDate === iso)
 
-    if (templateId === '') {
+    try {
+      if (templateId === '') {
+        if (existing) {
+          await writeDeleteScheduledWorkout(existing.id)
+          onRefresh()
+        }
+        return
+      }
+
       if (existing) {
         await writeDeleteScheduledWorkout(existing.id)
-        onRefresh()
       }
-      return
-    }
 
-    if (existing) {
-      await writeDeleteScheduledWorkout(existing.id)
+      await writeAddScheduledWorkout({
+        id: generateId(),
+        templateId,
+        scheduledDate: iso,
+        status: 'upcoming',
+      })
+      onRefresh()
+    } catch {
+      setError('Failed to update schedule. Please try again.')
     }
-
-    await writeAddScheduledWorkout({
-      id: generateId(),
-      templateId,
-      scheduledDate: iso,
-      status: 'upcoming',
-    })
-    onRefresh()
   }
 
   const handleCopyToNextWeek = async () => {
+    setError('')
     const nextMonday = new Date(monday)
     nextMonday.setDate(monday.getDate() + 7)
     const nextWeekDays = getWeekDays(nextMonday)
 
-    // Get this week's assignments
     const thisWeekAssignments = weekDays
       .map((day, i) => ({
         dayIndex: i,
@@ -99,28 +105,30 @@ export function ScheduleGrid({ schedule, templates, onRefresh }: ScheduleGridPro
       }))
       .filter((a) => a.workout)
 
-    // Remove any existing next-week entries
-    for (const day of nextWeekDays) {
-      const iso = toISODate(day)
-      const existing = schedule.find((s) => s.scheduledDate === iso)
-      if (existing) {
-        await writeDeleteScheduledWorkout(existing.id)
+    try {
+      for (const day of nextWeekDays) {
+        const iso = toISODate(day)
+        const existing = schedule.find((s) => s.scheduledDate === iso)
+        if (existing) {
+          await writeDeleteScheduledWorkout(existing.id)
+        }
       }
-    }
 
-    // Copy
-    for (const { dayIndex, workout } of thisWeekAssignments) {
-      if (!workout) continue
-      await writeAddScheduledWorkout({
-        id: generateId(),
-        templateId: workout.templateId,
-        scheduledDate: toISODate(nextWeekDays[dayIndex]),
-        status: 'upcoming',
-      })
-    }
+      for (const { dayIndex, workout } of thisWeekAssignments) {
+        if (!workout) continue
+        await writeAddScheduledWorkout({
+          id: generateId(),
+          templateId: workout.templateId,
+          scheduledDate: toISODate(nextWeekDays[dayIndex]),
+          status: 'upcoming',
+        })
+      }
 
-    setWeekOffset(weekOffset + 1)
-    onRefresh()
+      setWeekOffset(weekOffset + 1)
+      onRefresh()
+    } catch {
+      setError('Failed to copy week. Please try again.')
+    }
   }
 
   return (
@@ -211,6 +219,9 @@ export function ScheduleGrid({ schedule, templates, onRefresh }: ScheduleGridPro
         })}
       </div>
 
+      {error && (
+        <p className="text-sm text-red-500 mb-3">{error}</p>
+      )}
       {/* Copy to next week */}
       <Button variant="secondary" className="w-full" onClick={handleCopyToNextWeek}>
         Copy to Next Week
