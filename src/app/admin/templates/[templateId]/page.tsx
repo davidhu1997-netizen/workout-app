@@ -3,6 +3,7 @@
 import { use } from 'react'
 import { useTemplate } from '@/hooks/use-data'
 import { TemplateForm } from '@/components/admin/template-form'
+import { PageSpinner } from '@/components/ui/spinner'
 
 export default function EditTemplatePage({
   params,
@@ -12,7 +13,7 @@ export default function EditTemplatePage({
   const { templateId } = use(params)
   const { data: template, loading } = useTemplate(templateId)
 
-  if (loading) return null
+  if (loading) return <PageSpinner />
 
   if (!template) {
     return (

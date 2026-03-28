@@ -5,6 +5,7 @@ import { useSessions, useTemplates } from '@/hooks/use-data'
 import { WorkoutSession } from '@/lib/types'
 import { ReviewFilters, ReviewFilter } from '@/components/admin/review-filters'
 import { ReviewList, hasExceptions } from '@/components/admin/review-list'
+import { PageSpinner } from '@/components/ui/spinner'
 
 function getMonday(): Date {
   const now = new Date()
@@ -55,7 +56,7 @@ export default function ReviewPage() {
     return completed.filter(filterSession)
   }, [completed, filter, templates])
 
-  if (sl || tl) return null
+  if (sl || tl) return <PageSpinner />
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">

@@ -73,6 +73,8 @@ export function TemplateForm({ template }: TemplateFormProps) {
   const [exercises, setExercises] = useState<Exercise[]>(
     template?.exercises ?? [createBlankExercise()]
   )
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const [showImport, setShowImport] = useState(false)
   const [importText, setImportText] = useState('')
   const [importError, setImportError] = useState('')
@@ -110,7 +112,7 @@ export function TemplateForm({ template }: TemplateFormProps) {
     setExercises([...exercises, createBlankExercise()])
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name.trim()) return
 
     const validExercises = exercises.filter((e) => e.name.trim())
@@ -122,9 +124,15 @@ export function TemplateForm({ template }: TemplateFormProps) {
       exercises: validExercises,
     }
 
-    writeSaveTemplate(saved).then(() => {
+    setSaving(true)
+    setSaveError('')
+    try {
+      await writeSaveTemplate(saved)
       router.push('/admin/templates')
-    })
+    } catch {
+      setSaveError('Failed to save. Please try again.')
+      setSaving(false)
+    }
   }
 
   const handleParseImport = () => {
@@ -278,20 +286,24 @@ export function TemplateForm({ template }: TemplateFormProps) {
         ))}
       </div>
 
+      {saveError && (
+        <p className="text-sm text-red-500 mb-3">{saveError}</p>
+      )}
       <div className="flex gap-3">
         <Button
           variant="secondary"
           className="flex-1"
           onClick={() => router.push('/admin/templates')}
+          disabled={saving}
         >
           Cancel
         </Button>
         <Button
           className="flex-1"
           onClick={handleSave}
-          disabled={!isValid}
+          disabled={!isValid || saving}
         >
-          {isEdit ? 'Save Changes' : 'Create Template'}
+          {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Template'}
         </Button>
       </div>
     </div>

@@ -4,11 +4,12 @@ import Link from 'next/link'
 import { useTemplates } from '@/hooks/use-data'
 import { Button } from '@/components/ui/button'
 import { TemplateList } from '@/components/admin/template-list'
+import { PageSpinner } from '@/components/ui/spinner'
 
 export default function TemplatesPage() {
   const { data: templates, loading, refetch } = useTemplates()
 
-  if (loading) return null
+  if (loading) return <PageSpinner />
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">

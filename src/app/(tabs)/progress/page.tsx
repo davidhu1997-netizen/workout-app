@@ -4,6 +4,7 @@ import { useSessions, useTemplates } from '@/hooks/use-data'
 import { WorkoutSession } from '@/lib/types'
 import { formatDate, formatDuration } from '@/lib/utils'
 import { PageHeader } from '@/components/layout/page-header'
+import { PageSpinner } from '@/components/ui/spinner'
 
 function getThisWeekCount(sessions: WorkoutSession[]): number {
   const now = new Date()
@@ -39,7 +40,7 @@ export default function ProgressPage() {
   const { data: sessions, loading: sLoading } = useSessions()
   const { data: templates, loading: tLoading } = useTemplates()
 
-  if (sLoading || tLoading) return null
+  if (sLoading || tLoading) return <PageSpinner />
 
   const completed = sessions
     .filter((s) => s.completedAt)

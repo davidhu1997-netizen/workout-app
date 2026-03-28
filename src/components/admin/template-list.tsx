@@ -14,13 +14,18 @@ interface TemplateListProps {
 
 export function TemplateList({ templates, onRefresh }: TemplateListProps) {
   const [deleteTarget, setDeleteTarget] = useState<WorkoutTemplate | null>(null)
+  const [deleteError, setDeleteError] = useState('')
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteTarget) return
-    writeDeleteTemplate(deleteTarget.id).then(() => {
+    setDeleteError('')
+    try {
+      await writeDeleteTemplate(deleteTarget.id)
       setDeleteTarget(null)
       onRefresh()
-    })
+    } catch {
+      setDeleteError('Failed to delete. Please try again.')
+    }
   }
 
   return (
@@ -62,12 +67,15 @@ export function TemplateList({ templates, onRefresh }: TemplateListProps) {
         )}
       </div>
 
+      {deleteError && (
+        <p className="text-sm text-red-500 mt-2 px-1">{deleteError}</p>
+      )}
       <ConfirmDialog
         open={!!deleteTarget}
         title="Delete Template"
         message={`Are you sure you want to delete "${deleteTarget?.name}"? This cannot be undone.`}
         onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={() => { setDeleteTarget(null); setDeleteError('') }}
       />
     </>
   )
